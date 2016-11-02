@@ -66,6 +66,7 @@ filterwarnings('ignore', category = db.Warning)
 | name    | varchar(255) | YES  |     | NULL    |       |
 | result  | varchar(255) | YES  |     | NULL    |       |
 | chamber | varchar(255) | NO   | PRI |         |       |
+| status  | varchar(255) | YES  |     | NULL    |       |
 +---------+--------------+------+-----+---------+-------+
 '''
 try:
@@ -79,8 +80,8 @@ try:
 	for i, leg_i in enumerate(leg):
 	    # cur.execute
 	    cur.execute('INSERT INTO ' + db_name + '.bills '
-	    '(bill_id, status, name, result, chamber, summary)'
-	    'VALUES (' +str(leg_i['bill_id']) + ',"' + leg_i['status']+ '","' + leg_i['short_title']+'","' + leg_i['history']['enacted']+'","' + str(leg_i['chamber']) +'","' +leg_i['official_title']+'");',
+	    '(bill_id, name, status chamber, summary)'
+	    'VALUES (' +str(leg_i['bill_id']) + '","' + leg_i['short_title']+'","' + leg_i['history']['enacted']+'","' + str(leg_i['chamber']) +'","' +leg_i['official_title']+'");',
 	    )
 	    print i
 
