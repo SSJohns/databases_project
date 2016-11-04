@@ -69,29 +69,29 @@ filterwarnings('ignore', category = db.Warning)
 | status  | varchar(255) | YES  |     | NULL    |       |
 +---------+--------------+------+-----+---------+-------+
 '''
-try:
-	db_name = 'congress'
-	con = db.connect(user='', passwd='')
-	cur = con.cursor()
+# try:
+db_name = 'congress'
+con = db.connect(user='', passwd='')
+cur = con.cursor()
 
-	# Create new database
-	cur.execute('use congress;')
+# Create new database
+cur.execute('use congress;')
 
-	for i, leg_i in enumerate(leg):
-	    # cur.execute
-        bi = oursql.IterWrapper(leg_i['bill_id'])
-        st = oursql.IterWrapper(leg_i['short_title'])
-        he = oursql.IterWrapper(leg_i['history']['enacted'])
-        ch = oursql.IterWrapper(leg_i['chamber'])
-        ot = oursql.IterWrapper(leg_i['official_title'])
-	    cur.execute('INSERT INTO {}.bills2 (bill_id, name, status, chamber, summary) VALUES (?,?,?,?,? );'.format(db_name), (bi,st,he,ch,ot)
-	    )
-	    print i
+for i, leg_i in enumerate(leg):
+	# cur.execute
+	bi = oursql.IterWrapper(leg_i['bill_id'])
+	st = oursql.IterWrapper(leg_i['short_title'])
+	he = oursql.IterWrapper(leg_i['history']['enacted'])
+	ch = oursql.IterWrapper(leg_i['chamber'])
+	ot = oursql.IterWrapper(leg_i['official_title'])
+	cur.execute('INSERT INTO {}.bills2 (bill_id, name, status, chamber, summary) VALUES (?,?,?,?,? );'.format(db_name), (bi,st,he,ch,ot)
+	)
+	print i
 
-	cur.close()
-	con.commit()
-except Exception, e:
-	print 'Error. Last query: ' + str(cur._last_executed)
-	print e
+cur.close()
+con.commit()
+# except Exception, e:
+# 	print 'Error. Last query: ' + str(cur._last_executed)
+# 	print e
 
 print 'DB installation script finished'
