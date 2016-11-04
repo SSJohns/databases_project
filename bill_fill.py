@@ -1,5 +1,5 @@
 from warnings import filterwarnings
-import MySQLdb as db
+import oursql as db
 import sunlight
 from sunlight.pagination import PagingService
 
@@ -79,9 +79,12 @@ try:
 
 	for i, leg_i in enumerate(leg):
 	    # cur.execute
-	    cur.execute('INSERT INTO ' + db_name + '.bills '
-	    '(bill_id, name, status chamber, summary)'
-	    'VALUES (' +str(leg_i['bill_id']) + '","' + leg_i['short_title']+'","' + leg_i['history']['enacted']+'","' + str(leg_i['chamber']) +'","' +leg_i['official_title']+'");',
+        bi = oursql.IterWrapper(leg_i['bill_id'])
+        st = oursql.IterWrapper(leg_i['short_title'])
+        he = oursql.IterWrapper(leg_i['history']['enacted'])
+        ch = oursql.IterWrapper(leg_i['chamber'])
+        ot = oursql.IterWrapper(leg_i['official_title'])
+	    cur.execute('INSERT INTO {}.bills2 (bill_id, name, status, chamber, summary) VALUES (?,?,?,?,? );'.format(db_name), (bi,st,he,ch,ot)
 	    )
 	    print i
 

@@ -21,33 +21,19 @@ try:
 	# Create new database
 	cur.execute('use congress;')
 
-	# Create PARAMETERS table
-	# '''
-	# cur.execute('DROP TABLE IF EXISTS ' + db_name + '.PARAMETERS;')
-	# query = ('CREATE TABLE ' + db_name + '.PARAMETERS ('
-	# 'idPARAMETERS INT(10) NOT NULL AUTO_INCREMENT, '
-	# 'Param_name VARCHAR(30) NULL DEFAULT NULL, '
-	# 'Param_value VARCHAR(255) NULL DEFAULT NULL, '
-	# 'Timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP '
-	# 'ON UPDATE CURRENT_TIMESTAMP, '
-	# 'User_id VARCHAR(20) NULL DEFAULT NULL, '
-	# 'PRIMARY KEY (idPARAMETERS) );'
-	# )
-	# cur.execute(query)
-	# '''
 	for i, leg_i in enumerate(leg):
-	    # cur.execute
-	    # pp.pprint(leg_i)
-	    if 'district' not in leg_i:
-		cur.execute('INSERT INTO ' + db_name + '.congress_people '
-		'(congress_id, state, last_name, first_name, district, chamber) '
-		'VALUES (' +str(leg_i['thomas_id']) + ',"' + leg_i['state']+ '","' + leg_i['last_name']+'","' + leg_i['first_name']+'","' + 'None' +'","' +leg_i['chamber']+'");',
-		)
-		continue
-	    cur.execute('INSERT INTO ' + db_name + '.congress_people '
-	    '(congress_id, state, last_name, first_name, district, chamber) '
-	    'VALUES (' +str(leg_i['thomas_id']) + ',"' + leg_i['state']+ '","' + leg_i['last_name']+'","' + leg_i['first_name']+'","' + str(leg_i['district']) +'","' +leg_i['chamber']+'");',
-	    )
+        ti = oursql.IterWrapper(leg_i['thomas_id'])
+        st = oursql.IterWrapper(leg_i['state'])
+        ln = oursql.IterWrapper(leg_i['last_name'])
+        fn = oursql.IterWrapper(leg_i['first_name'])
+		if 'district' not in leg_i:
+	    	dt = oursql.IterWrapper('None')
+		else:
+			dt = oursql.IterWrapper(leg_i['district'])
+        ch = oursql.IterWrapper(leg_i['chamber'])
+
+	    cur.execute('INSERT INTO {}.congress_people (congress_id, state, last_name, first_name, district, chamber) VALUES (?,?,?,?,?,?);'.format(db_name),
+	    (ti,st,ln,fn,dt,ch) )
 	    print i
 
 	cur.close()
