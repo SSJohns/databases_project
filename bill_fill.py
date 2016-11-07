@@ -1,6 +1,7 @@
 from warnings import filterwarnings
 import oursql as db
 import sunlight
+import os
 from sunlight.pagination import PagingService
 
 '''
@@ -52,7 +53,8 @@ Example Data
         "title": "Rep"
     },
 '''
-
+USER_DB = os.environ['USER_DB']
+PASS_DB = os.environ['PASS_DB']
 paging_service = PagingService(sunlight.congress)
 
 leg = paging_service.bills(limit=600)
@@ -71,7 +73,7 @@ filterwarnings('ignore', category = db.Warning)
 '''
 # try:
 db_name = 'congress'
-con = db.connect(user='', passwd='')
+con = db.connect(user=USER_DB, passwd=PASS_DB)
 cur = con.cursor()
 
 # Create new database
@@ -79,12 +81,15 @@ cur.execute('use congress;')
 
 for i, leg_i in enumerate(leg):
 	# cur.execute
-	bi = oursql.IterWrapper(leg_i['bill_id'])
-	st = oursql.IterWrapper(leg_i['short_title'])
-	he = oursql.IterWrapper(leg_i['history']['enacted'])
-	ch = oursql.IterWrapper(leg_i['chamber'])
-	ot = oursql.IterWrapper(leg_i['official_title'])
-	cur.execute('INSERT INTO {}.bills2 (bill_id, name, status, chamber, summary) VALUES (?,?,?,?,? );'.format(db_name), (bi,st,he,ch,ot)
+	bi = db.IterWrapper(leg_i['bill_id'])
+	if leg_i['short_title'] is None:
+		st = db.IterWrapper('None')
+	else:
+		st = db.IterWrapper(leg_i['short_title'])
+	he = leg_i['history']['enacted']
+	ch = db.IterWrapper(leg_i['chamber'])
+	ot = db.IterWrapper(leg_i['official_title'])
+	cur.execute('INSERT INTO {}.bills (bill_id, name, result, chamber, official_title) VALUES (?,?,?,?,? );'.format(db_name), (bi,st,he,ch,ot)
 	)
 	print i
 
