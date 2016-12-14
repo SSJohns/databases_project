@@ -21,27 +21,27 @@ try:
 	cur = con.cursor()
 
 	# Create new database
-	cur.execute('use congress;')
+	# cur.execute('use congress;')
 
 	for i, leg_i in enumerate(leg):
-        ti = oursql.IterWrapper(leg_i['thomas_id'])
-        st = oursql.IterWrapper(leg_i['state'])
-        ln = oursql.IterWrapper(leg_i['last_name'])
-        fn = oursql.IterWrapper(leg_i['first_name'])
+        	ti = oursql.IterWrapper(leg_i['thomas_id'])
+        	st = oursql.IterWrapper(leg_i['state'])
+        	ln = oursql.IterWrapper(leg_i['last_name'])
+        	fn = oursql.IterWrapper(leg_i['first_name'])
 		if 'district' not in leg_i:
-	    	dt = oursql.IterWrapper('None')
+	    		dt = oursql.IterWrapper('None')
 		else:
 			dt = oursql.IterWrapper(leg_i['district'])
-        ch = oursql.IterWrapper(leg_i['chamber'])
-
-	    cur.execute('INSERT INTO {}.congress_people (congress_id, state, last_name, first_name, district, chamber) VALUES (?,?,?,?,?,?);'.format(db_name),
-	    (ti,st,ln,fn,dt,ch) )
-	    print i
+        	ch = oursql.IterWrapper(leg_i['chamber'])
+		print "{email:%s, userId:%s, first_name:%s, last_name:%s, chamber:%s, state:%s}".format(leg_i["oc_email"],ti,fn,ln,ch,st)
+	    	# cur.execute('INSERT INTO {}.congress_people (congress_id, state, last_name, first_name, district, chamber) VALUES (?,?,?,?,?,?);'.format(db_name),
+	    	# (ti,st,ln,fn,dt,ch) )
+	    	print i
 
 	cur.close()
 	con.commit()
 except Exception, e:
-	print 'Error. Last query: ' + str(cur._last_executed)
+#	print 'Error. Last query: ' + str(cur._last_executed)
 	print e
 
 print 'DB installation script finished'
