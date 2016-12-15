@@ -33,9 +33,8 @@ try:
 		else:
 			dt = oursql.IterWrapper(leg_i['district'])
         	ch = oursql.IterWrapper(leg_i['chamber'])
-		print "{email:%s, userId:%s, first_name:%s, last_name:%s, chamber:%s, state:%s}".format(leg_i["oc_email"],ti,fn,ln,ch,st)
-	    	# cur.execute('INSERT INTO {}.congress_people (congress_id, state, last_name, first_name, district, chamber) VALUES (?,?,?,?,?,?);'.format(db_name),
-	    	# (ti,st,ln,fn,dt,ch) )
+	    	cur.execute('INSERT INTO {}.congress_people (congress_id, state, last_name, first_name, district, chamber) VALUES (?,?,?,?,?,?);'.format(db_name),
+	    	(ti,st,ln,fn,dt,ch) )
 	    	print i
 
 	cur.close()
